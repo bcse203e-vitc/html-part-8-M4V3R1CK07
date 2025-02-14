@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Elegant Image Carousel</title>
+    <style>
+      /* Base Styles */
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+      }
+
+      /* Carousel Container */
+      .carousel-container {
+        max-width: 900px;
+        width: 100%;
+        position: relative;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        background-color: white;
+      }
+
+      /* Carousel Wrapper */
+      .carousel-wrapper {
+        width: 100%;
+        height: 500px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      /* Slides */
+      .carousel-slides {
+        width: 100%;
+        height: 100%;
+        position: relative;
+      }
+
+      .slide {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        opacity: 0;
+        transition: opacity 0.8s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .slide.active {
+        opacity: 1;
+      }
+
+      .slide img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      /* Caption */
+      .caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        padding: 20px;
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.8) 0%,
+          rgba(0, 0, 0, 0) 100%
+        );
+        color: white;
+        text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        transform: translateY(20px);
+        transition: all 0.5s ease;
+        z-index: 10;
+      }
+
+      .slide.active .caption {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Navigation Buttons */
+      .carousel-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(255, 255, 255, 0.8);
+        color: #333;
+        border: none;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        font-size: 24px;
+        cursor: pointer;
+        z-index: 100;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+        transition: all 0.3s ease;
+      }
+
+      .carousel-button:hover {
+        background-color: rgba(255, 255, 255, 0.95);
+        transform: translateY(-50%) scale(1.05);
+      }
+
+      .carousel-button:focus {
+        outline: none;
+      }
+
+      .prev-button {
+        left: 20px;
+      }
+
+      .next-button {
+        right: 20px;
+      }
+
+      /* Indicators */
+      .carousel-indicators {
+        position: absolute;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 10px;
+        z-index: 100;
+      }
+
+      .indicator {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background-color: rgba(255, 255, 255, 0.6);
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .indicator.active {
+        background-color: white;
+        transform: scale(1.2);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="carousel-container">
+      <div class="carousel-wrapper">
+        <div class="carousel-slides">
+          <div class="slide active">
+            <img
+              src="images/beautiful_landscape.jpg"
+              alt="Beautiful landscape"
+            />
+            <div class="caption">
+              <h2>Mountain Serenity</h2>
+              <p>Explore the majestic peaks and serene valleys</p>
+            </div>
+          </div>
+          <div class="slide">
+            <img src="images/ocean_view.jpg" alt="Ocean view" />
+            <div class="caption">
+              <h2>Ocean Tranquility</h2>
+              <p>Experience the calming waves and endless horizons</p>
+            </div>
+          </div>
+          <div class="slide">
+            <img src="images/forest_trail.jpg" alt="Forest trail" />
+            <div class="caption">
+              <h2>Forest Adventure</h2>
+              <p>Discover hidden pathways through ancient woods</p>
+            </div>
+          </div>
+          <div class="slide">
+            <img src="images/city_skyline.jpg" alt="City skyline" />
+            <div class="caption">
+              <h2>Urban Exploration</h2>
+              <p>Navigate the vibrant energy of city life</p>
+            </div>
+          </div>
+        </div>
+
+        <button class="carousel-button prev-button">❮</button>
+        <button class="carousel-button next-button">❯</button>
+
+        <div class="carousel-indicators"></div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const slides = document.querySelectorAll(".slide");
+        const prevButton = document.querySelector(".prev-button");
+        const nextButton = document.querySelector(".next-button");
+        const carouselWrapper = document.querySelector(".carousel-wrapper");
+        const indicatorsContainer = document.querySelector(
+          ".carousel-indicators"
+        );
+
+        let currentSlide = 0;
+        let slideInterval;
+        let isAutoPlaying = true;
+
+        // Create indicators
+        slides.forEach((_, index) => {
+          const indicator = document.createElement("div");
+          indicator.classList.add("indicator");
+          if (index === 0) {
+            indicator.classList.add("active");
+          }
+
+          indicator.addEventListener("click", () => {
+            goToSlide(index);
+            resetInterval();
+          });
+
+          indicatorsContainer.appendChild(indicator);
+        });
+
+        const indicators = document.querySelectorAll(".indicator");
+
+        // Initialize autoplay
+        startAutoPlay();
+
+        // Add event listeners for pause on hover
+        carouselWrapper.addEventListener("mouseenter", pauseAutoPlay);
+        carouselWrapper.addEventListener("mouseleave", startAutoPlay);
+
+        // Navigation button event listeners
+        prevButton.addEventListener("click", () => {
+          goToPrevSlide();
+          resetInterval();
+        });
+
+        nextButton.addEventListener("click", () => {
+          goToNextSlide();
+          resetInterval();
+        });
+
+        // Functions
+        function goToSlide(slideIndex) {
+          slides[currentSlide].classList.remove("active");
+          indicators[currentSlide].classList.remove("active");
+
+          currentSlide = (slideIndex + slides.length) % slides.length;
+
+          slides[currentSlide].classList.add("active");
+          indicators[currentSlide].classList.add("active");
+        }
+
+        function goToNextSlide() {
+          goToSlide(currentSlide + 1);
+        }
+
+        function goToPrevSlide() {
+          goToSlide(currentSlide - 1);
+        }
+
+        function startAutoPlay() {
+          if (!isAutoPlaying) {
+            slideInterval = setInterval(goToNextSlide, 3000);
+            isAutoPlaying = true;
+          }
+        }
+
+        function pauseAutoPlay() {
+          if (isAutoPlaying) {
+            clearInterval(slideInterval);
+            isAutoPlaying = false;
+          }
+        }
+
+        function resetInterval() {
+          pauseAutoPlay();
+          startAutoPlay();
+        }
+
+        // Keyboard navigation
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "ArrowLeft") {
+            goToPrevSlide();
+            resetInterval();
+          } else if (e.key === "ArrowRight") {
+            goToNextSlide();
+            resetInterval();
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

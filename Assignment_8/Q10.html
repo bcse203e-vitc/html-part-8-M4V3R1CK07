@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Font Size Adjuster</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #282c34; /* Dark background */
+        color: #61dafb; /* Neon blue text color */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(97, 218, 251, 0.3); /* Neon blue glow */
+        text-align: center;
+      }
+
+      h1 {
+        color: #61dafb;
+      }
+
+      #resizableParagraph {
+        font-size: 1rem; /* Initial font size */
+        margin-top: 20px;
+        color: #ddd; /* Lighter text color */
+      }
+
+      button {
+        padding: 10px 20px;
+        margin: 0 10px;
+        background-color: #61dafb; /* Neon blue */
+        color: #282c34; /* Dark text */
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease;
+      }
+
+      button:hover {
+        background-color: #4ab2e6; /* Slightly darker blue on hover */
+      }
+
+      /* Responsive Design (adjust as needed) */
+      @media (max-width: 500px) {
+        button {
+          padding: 8px 16px;
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Dynamic Font Size Adjuster</h1>
+      <p id="resizableParagraph">
+        This is a paragraph with adjustable font size. Click the buttons below
+        to increase or decrease the text size.
+      </p>
+      <div>
+        <button onclick="adjustFontSize(1)">🔺 Increase Font Size</button>
+        <button onclick="adjustFontSize(-1)">🔻 Decrease Font Size</button>
+      </div>
+    </div>
+
+    <script>
+      const paragraph = document.getElementById("resizableParagraph");
+      let currentFontSize = 1; // Initial font size in rem
+
+      function adjustFontSize(change) {
+        currentFontSize += change * 0.1; // Increment/decrement by 0.1rem
+
+        // Clamp font size to reasonable limits (optional)
+        currentFontSize = Math.max(0.5, Math.min(3, currentFontSize)); // Between 0.5rem and 3rem
+
+        paragraph.style.fontSize = `${currentFontSize}rem`;
+      }
+    </script>
+  </body>
+</html>

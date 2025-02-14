@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Digital Clock</title>
+    <style>
+      body {
+        font-family: "Roboto Mono", monospace; /* Monospace font for digits */
+        background-color: #282c34; /* Dark background */
+        color: #61dafb; /* Neon blue text color */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .clock-container {
+        background-color: rgba(
+          0,
+          0,
+          0,
+          0.5
+        ); /* Semi-transparent black background */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(97, 218, 251, 0.3); /* Neon blue glow */
+        text-align: center;
+      }
+
+      #clock {
+        font-size: 3rem;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(97, 218, 251, 0.5); /* Stronger neon blue glow */
+        letter-spacing: 5px; /* Adjust spacing between digits */
+      }
+
+      .format-toggle {
+        margin-top: 10px;
+        padding: 8px 16px;
+        background-color: #61dafb;
+        color: #282c34;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: background-color 0.3s ease; /* Smooth transition on hover */
+      }
+
+      .format-toggle:hover {
+        background-color: #4ab2e6; /* Slightly darker blue on hover */
+      }
+    </style>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="clock-container">
+      <div id="clock"></div>
+      <button class="format-toggle" id="formatButton">12-hour</button>
+    </div>
+
+    <script>
+      const clockDisplay = document.getElementById("clock");
+      const formatButton = document.getElementById("formatButton");
+      let is24Hour = true;
+
+      function updateClock() {
+        const now = new Date();
+        let hours = now.getHours();
+        const minutes = now.getMinutes().toString().padStart(2, "0");
+        const seconds = now.getSeconds().toString().padStart(2, "0");
+        let ampm = "";
+
+        if (!is24Hour) {
+          ampm = hours >= 12 ? "PM" : "AM";
+          hours = hours % 12 || 12; // Convert to 12-hour format
+        }
+
+        const timeString = `${hours}:${minutes}:${seconds} ${ampm}`;
+        clockDisplay.textContent = timeString;
+      }
+
+      updateClock(); // Initial update
+      setInterval(updateClock, 1000); // Update every second
+
+      formatButton.addEventListener("click", () => {
+        is24Hour = !is24Hour;
+        formatButton.textContent = is24Hour ? "12-hour" : "24-hour";
+        updateClock(); // Update the clock display immediately
+      });
+    </script>
+  </body>
+</html>

@@ -1,1 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Dynamic Table Creator</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        margin: 0;
+        padding: 20px;
+        color: #333;
+      }
 
+      .container {
+        max-width: 900px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        padding: 30px;
+      }
+
+      h1 {
+        text-align: center;
+        color: #2c3e50;
+        margin-top: 0;
+      }
+
+      .input-group {
+        display: flex;
+        gap: 20px;
+        margin-bottom: 30px;
+        flex-wrap: wrap;
+      }
+
+      .field-group {
+        flex: 1;
+        min-width: 200px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 600;
+        color: #34495e;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+
+      .btn {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 12px 24px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s;
+      }
+
+      .btn:hover {
+        background-color: #2980b9;
+      }
+
+      #table-container {
+        margin-top: 30px;
+        overflow-x: auto;
+      }
+
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      th,
+      td {
+        border: 1px solid #ddd;
+        padding: 12px;
+        text-align: center;
+        position: relative;
+      }
+
+      th {
+        background-color: #f2f6f9;
+      }
+
+      .delete-btn {
+        background-color: #e74c3c;
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 22px;
+        height: 22px;
+        line-height: 20px;
+        font-size: 12px;
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .delete-btn:hover {
+        background-color: #c0392b;
+      }
+
+      .empty-cell {
+        background-color: #f8f9fa;
+      }
+
+      .notice {
+        text-align: center;
+        color: #7f8c8d;
+        margin-top: 20px;
+        font-style: italic;
+      }
+
+      td {
+        min-width: 80px;
+        min-height: 40px;
+        height: 40px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Dynamic Table Creator</h1>
+
+      <div class="input-group">
+        <div class="field-group">
+          <label for="rows">Number of Rows:</label>
+          <input type="number" id="rows" min="1" max="20" value="3" />
+        </div>
+
+        <div class="field-group">
+          <label for="columns">Number of Columns:</label>
+          <input type="number" id="columns" min="1" max="20" value="3" />
+        </div>
+
+        <button id="generate-btn" class="btn">Generate Table</button>
+      </div>
+
+      <div id="table-container"></div>
+
+      <p class="notice">Click the "×" button to delete a row or column</p>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const generateBtn = document.getElementById("generate-btn");
+        const tableContainer = document.getElementById("table-container");
+
+        generateBtn.addEventListener("click", function () {
+          const rows = parseInt(document.getElementById("rows").value);
+          const columns = parseInt(document.getElementById("columns").value);
+
+          // Validate input
+          if (
+            isNaN(rows) ||
+            isNaN(columns) ||
+            rows < 1 ||
+            columns < 1 ||
+            rows > 20 ||
+            columns > 20
+          ) {
+            alert(
+              "Please enter valid numbers between 1 and 20 for rows and columns."
+            );
+            return;
+          }
+
+          // Create the table
+          generateTable(rows, columns);
+        });
+
+        // Generate the initial table
+        generateTable(3, 3);
+
+        function generateTable(rows, columns) {
+          tableContainer.innerHTML = "";
+
+          const table = document.createElement("table");
+
+          // Create header row for column delete buttons
+          const headerRow = document.createElement("tr");
+          // Empty cell for row/column intersection
+          const cornerCell = document.createElement("th");
+          cornerCell.className = "empty-cell";
+          headerRow.appendChild(cornerCell);
+
+          // Add column headers with delete buttons
+          for (let j = 0; j < columns; j++) {
+            const th = document.createElement("th");
+            th.textContent = `Column ${j + 1}`;
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-btn";
+            deleteBtn.innerHTML = "×";
+            deleteBtn.title = "Delete column";
+            deleteBtn.onclick = function () {
+              deleteColumn(j);
+            };
+
+            th.appendChild(deleteBtn);
+            headerRow.appendChild(th);
+          }
+
+          table.appendChild(headerRow);
+
+          // Create data rows
+          for (let i = 0; i < rows; i++) {
+            const row = document.createElement("tr");
+
+            // Add row header with delete button
+            const rowHeader = document.createElement("th");
+            rowHeader.textContent = `Row ${i + 1}`;
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "delete-btn";
+            deleteBtn.innerHTML = "×";
+            deleteBtn.title = "Delete row";
+            deleteBtn.onclick = function () {
+              deleteRow(i);
+            };
+
+            rowHeader.appendChild(deleteBtn);
+            row.appendChild(rowHeader);
+
+            // Add empty data cells
+            for (let j = 0; j < columns; j++) {
+              const cell = document.createElement("td");
+              row.appendChild(cell);
+            }
+
+            table.appendChild(row);
+          }
+
+          tableContainer.appendChild(table);
+        }
+
+        function deleteRow(rowIndex) {
+          const table = tableContainer.querySelector("table");
+          // +1 because of the header row
+          table.deleteRow(rowIndex + 1);
+
+          // Update the number of rows input
+          const rowsInput = document.getElementById("rows");
+          rowsInput.value = parseInt(rowsInput.value) - 1;
+
+          // Renumber the row headers
+          updateRowHeaders();
+        }
+
+        function deleteColumn(colIndex) {
+          const table = tableContainer.querySelector("table");
+          const rows = table.rows;
+
+          // Delete the specified column in each row
+          for (let i = 0; i < rows.length; i++) {
+            // +1 because of the row header
+            rows[i].deleteCell(colIndex + 1);
+          }
+
+          // Update the number of columns input
+          const columnsInput = document.getElementById("columns");
+          columnsInput.value = parseInt(columnsInput.value) - 1;
+
+          // Renumber the column headers
+          updateColumnHeaders();
+        }
+
+        function updateRowHeaders() {
+          const table = tableContainer.querySelector("table");
+          const rows = table.rows;
+
+          // Start from index 1 to skip the header row
+          for (let i = 1; i < rows.length; i++) {
+            const rowHeader = rows[i].cells[0];
+
+            // Keep the delete button
+            const deleteBtn = rowHeader.querySelector(".delete-btn");
+            rowHeader.innerHTML = `Row ${i}`;
+
+            if (deleteBtn) {
+              deleteBtn.onclick = function () {
+                deleteRow(i - 1);
+              };
+              rowHeader.appendChild(deleteBtn);
+            }
+          }
+        }
+
+        function updateColumnHeaders() {
+          const table = tableContainer.querySelector("table");
+          const headerRow = table.rows[0];
+
+          // Start from index 1 to skip the corner cell
+          for (let i = 1; i < headerRow.cells.length; i++) {
+            const colHeader = headerRow.cells[i];
+
+            // Keep the delete button
+            const deleteBtn = colHeader.querySelector(".delete-btn");
+            colHeader.innerHTML = `Column ${i}`;
+
+            if (deleteBtn) {
+              deleteBtn.onclick = function () {
+                deleteColumn(i - 1);
+              };
+              colHeader.appendChild(deleteBtn);
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

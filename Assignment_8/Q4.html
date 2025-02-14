@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Modern Login Form</title>
+    <style>
+      /* Modern CSS Reset */
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      /* Card Container */
+      .container {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        width: 90%;
+        max-width: 400px;
+        padding: 40px;
+      }
+
+      h2 {
+        margin-top: 0;
+        color: #333;
+        text-align: center;
+        margin-bottom: 30px;
+      }
+
+      /* Form Styles */
+      .form-group {
+        margin-bottom: 25px;
+        position: relative;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 14px;
+        color: #666;
+        font-weight: 500;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 12px 15px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s, box-shadow 0.3s;
+      }
+
+      input:focus {
+        outline: none;
+        border-color: #a777e3;
+        box-shadow: 0 0 0 2px rgba(167, 119, 227, 0.2);
+      }
+
+      /* Error Message */
+      .error-message {
+        color: #e74c3c;
+        font-size: 12px;
+        margin-top: 5px;
+        display: none;
+        font-weight: 500;
+      }
+
+      input:invalid + .error-message {
+        display: block;
+      }
+
+      /* Password Toggle */
+      .password-container {
+        position: relative;
+      }
+
+      .show-password {
+        display: flex;
+        align-items: center;
+        margin-top: 10px;
+        font-size: 14px;
+        color: #666;
+      }
+
+      .show-password input {
+        margin-right: 8px;
+      }
+
+      /* Submit Button */
+      .submit-btn {
+        width: 100%;
+        background: linear-gradient(135deg, #6e8efb, #a777e3);
+        color: white;
+        border: none;
+        padding: 14px;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: transform 0.2s, box-shadow 0.2s;
+      }
+
+      .submit-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+
+      .submit-btn:active {
+        transform: translateY(0);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Create Account</h2>
+      <form id="login-form">
+        <div class="form-group">
+          <label for="name">Full Name</label>
+          <input
+            type="text"
+            id="name"
+            name="name"
+            required
+            placeholder="Enter your name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            required
+            pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+            placeholder="Enter your email"
+          />
+          <div class="error-message">Please enter a valid email address</div>
+        </div>
+
+        <div class="form-group">
+          <label for="password">Password</label>
+          <div class="password-container">
+            <input
+              type="password"
+              id="password"
+              name="password"
+              required
+              placeholder="Create a password"
+              minlength="8"
+            />
+            <div class="show-password">
+              <input type="checkbox" id="show-password" />
+              <label for="show-password">Show password</label>
+            </div>
+          </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Sign Up</button>
+      </form>
+    </div>
+
+    <script>
+      // Password visibility toggle
+      const passwordField = document.getElementById("password");
+      const showPasswordCheckbox = document.getElementById("show-password");
+
+      showPasswordCheckbox.addEventListener("change", function () {
+        if (this.checked) {
+          passwordField.type = "text";
+        } else {
+          passwordField.type = "password";
+        }
+      });
+
+      // Form validation feedback
+      const emailInput = document.getElementById("email");
+
+      emailInput.addEventListener("input", function () {
+        if (emailInput.validity.valid) {
+          emailInput.nextElementSibling.style.display = "none";
+        } else {
+          emailInput.nextElementSibling.style.display = "block";
+        }
+      });
+    </script>
+  </body>
+</html>

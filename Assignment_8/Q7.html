@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Key Press Detector</title>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #282c34; /* Dark background */
+        color: #61dafb; /* Neon blue text color */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        margin: 0;
+      }
+
+      .container {
+        background-color: rgba(
+          0,
+          0,
+          0,
+          0.5
+        ); /* Semi-transparent black background */
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 0 10px rgba(97, 218, 251, 0.3); /* Neon blue glow */
+        text-align: center;
+      }
+
+      #keyDisplay {
+        font-size: 2rem;
+        font-weight: bold;
+        text-shadow: 0 0 5px rgba(97, 218, 251, 0.5); /* Stronger neon blue glow */
+        margin-top: 10px; /* Space from instructions */
+      }
+
+      .instructions {
+        font-size: 1.2rem;
+        color: #ddd; /* Lighter text for instructions */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <p class="instructions">Press any key to see it displayed below:</p>
+      <div id="keyDisplay"></div>
+    </div>
+
+    <script>
+      const keyDisplay = document.getElementById("keyDisplay");
+
+      document.addEventListener("keydown", (event) => {
+        const keyPressed = event.key;
+        keyDisplay.textContent = `You pressed: ${keyPressed.toUpperCase()}`; // Show uppercase key
+
+        // Optional: Show key code as well
+        // keyDisplay.textContent = `You pressed: ${keyPressed.toUpperCase()} (Code: ${event.code})`;
+      });
+    </script>
+  </body>
+</html>
